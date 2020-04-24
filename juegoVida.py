@@ -1,5 +1,5 @@
 import pygame
-import numpy as numpy
+import numpy as np
 
 #creamos pantalla
 pygame.init()
@@ -13,16 +13,29 @@ screen.fill(bg)
 
 nxC, nyC = 25, 25
 # El ancho de las celdas se da por la división
-# del tamaño de pantalla y el tamaño de celdas x and y
+# de la dimención pantalla y dimención de celdas x and y
 dimCW = width / nxC
 dimCH = height / nyC
 
+#Estado de las celdas. Vivas =1, Muertas =0.
+gameState = np.zeros((nxC, nyC))
 #Este es el ciclo infinito que reproduce la pantalla
-
 while True:
     pygame.event.get()
     for y in range(0,nxC):
             for x in range(0, nyC):
+         #Calcular el número de vecinos cercanos
+         #Se utiliza el metodo toroidal para que se reinicie una vez llegue al limite
+               n_veci = gameState[(x-1) % nxC, (y-1) % nyC] + \
+                        gameState[(x)   % nxC, (y-1) % nyC] + \
+                        gameState[(x+1) % nxC, (y-1) % nyC] + \
+                        gameState[(x-1) % nxC, (y)   % nyC] + \
+                        gameState[(x+1) % nxC, (y)   % nyC] + \
+                        gameState[(x-1) % nxC, (y+1) % nyC] + \
+                        gameState[(x)   % nxC, (y+1) % nyC] + \
+                        gameState[(x+1) % nxC, (y+1) % nyC]      
+
+
             #se delimitan las cordenadas del poligono al multiplicar los indices por ancho y alto de las celdas
                poly = [((x)   * dimCW, y     * dimCH), 
                       ((x+1)  * dimCW, y     * dimCH),
