@@ -19,9 +19,22 @@ dimCH = height / nyC
 
 #Estado de las celdas. Vivas =1, Muertas =0.
 gameState = np.zeros((nxC, nyC))
+
+#**AQUI SE CREAN LOS AUTOMATAS**
+gameState[5,3] = 1
+gameState[5,4] = 1
+gameState[5,5] = 1
+#automata movil
+gameState[21,21] = 1
+gameState[22,22] = 1
+gameState[22,23] = 1
+gameState[21,23] = 1
+gameState[20,23] = 1
 #Este es el ciclo infinito que reproduce la pantalla
 while True:
     pygame.event.get()
+    #iteración de cada estado del juego
+    newGameState = np.copy(gameState)
     for y in range(0,nxC):
             for x in range(0, nyC):
          #Calcular el número de vecinos cercanos
@@ -34,27 +47,29 @@ while True:
                         gameState[(x-1) % nxC, (y+1) % nyC] + \
                         gameState[(x)   % nxC, (y+1) % nyC] + \
                         gameState[(x+1) % nxC, (y+1) % nyC]      
-
-
-            #se delimitan las cordenadas del poligono al multiplicar los indices por ancho y alto de las celdas
+         #REGLA1: Una célula muerta con exactas 3 vecinas vivas, "revive".
+               if gameState[x,y] == 0 and n_veci == 3:
+                   newGameState[x,y] = 1
+         #REGLA2: Una célula viva con menos de 2 o más de 3 vecinas vivias, "muere"
+         #ES DECIR: muerte por soledad o por superpoblación
+               elif gameState[x,y] == 1 and (n_veci < 2 or n_veci >3):
+                   newGameState[x,y] = 0
+         #se delimitan las cordenadas del poligono al multiplicar los indices por ancho y alto de las celdas
                poly = [((x)   * dimCW, y     * dimCH), 
                       ((x+1)  * dimCW, y     * dimCH),
                       ((x+1)  * dimCW, (y+1) * dimCH),
                       ((x)    * dimCW, (y+1) * dimCH)]
-            #Grosor de linea de 1 pixel
-               pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
-         
-      
+         #Dibujado de la celda para cada par de x e y
+               if newGameState[x,y] == 0:    
+                   pygame.draw.polygon(screen, (128,128,128), poly, 1)
+               else:    
+                   pygame.draw.polygon(screen, (255,255,255), poly, 0)
+    #Actualizamos el estado del juego     
+    gameState = np.copy(newGameState)
+    #Actualizamos pantalla  
     pygame.display.flip()
         
 
-             
-        
-
- 
-
-
-#Crear graficos por fotogramas
 
     
 
