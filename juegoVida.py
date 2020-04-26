@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import time
 
 #creamos pantalla
 pygame.init()
@@ -35,6 +36,8 @@ while True:
     pygame.event.get()
     #iteración de cada estado del juego
     newGameState = np.copy(gameState)
+    screen.fill(bg)
+    time.sleep(0.1)
     for y in range(0,nxC):
             for x in range(0, nyC):
          #Calcular el número de vecinos cercanos
